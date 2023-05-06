@@ -25,19 +25,27 @@ module.exports = (connection) => {
    *       404:
    *         $ref: '#/components/responses/NotFound'
    */
-  router.post("/", async (rep, res, next) => {
+  router.post("/", async (req, res, next) => {
     try {
-      const { title, content } = req.body;
-      const result = await connection.query(
-        `INSERT INTO posts (title, content) VALUES (?, ?)`,
-        [title, content]
-      );
-      console.log(result);
+      const { title, content, user_id } = req.body;
+      const result = await connection
+        .promise()
+        .query(
+          `INSERT INTO articles (title, content,user_id) VALUES (?, ?,?)`,
+          [title, content, user_id]
+        );
 
       res.json({ data: "ok" });
     } catch (error) {
+      console.log(error);
       next(error);
     }
+  });
+
+  // 유효성 체크
+  router.get("/", async (rep, res, next) => {
+    try {
+    } catch (error) {}
   });
   /**
    * @swagger
