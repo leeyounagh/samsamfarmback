@@ -5,6 +5,7 @@ const express = require("express");
 const cron = require("cron");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
+const cors = require("cors");
 
 const options = {
   definition: {
@@ -87,6 +88,7 @@ class App {
 
   registerMiddleware() {
     // Middlewares 등록
+    this.app.use(cors()); // cors 미들웨어 등록
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
   }

@@ -28,7 +28,7 @@ module.exports = (connection) => {
   router.post("/", async (req, res, next) => {
     try {
       const { title, content, user_id } = req.body;
-      const result = await connection
+      await connection
         .promise()
         .query(
           `INSERT INTO articles (title, content,user_id) VALUES (?, ?,?)`,
@@ -42,11 +42,6 @@ module.exports = (connection) => {
     }
   });
 
-  // 유효성 체크
-  router.get("/", async (rep, res, next) => {
-    try {
-    } catch (error) {}
-  });
   /**
    * @swagger
    
