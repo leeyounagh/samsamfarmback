@@ -65,10 +65,21 @@ module.exports = (connection) => {
    *       404:
    *         $ref: '#/components/responses/NotFound'
    */
-  router.get("/", (req, res) => {
-    res.json({ data: "ok" });
+  router.get("/", async (req, res) => {
+    try {
+      const { page, perPage } = req.query;
+      const result = await connection
+        .promise()
+        .query("SELECT * FROM articles LIMIT ?, ?", [
+          (page - 1) * perPage,
+          parseInt(perPage),
+        ]);
+      res.json({ data: result[0] }); // result는 배열 형태로 반환되므로, [0]으로 실제 결과값에 접근합니다.
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ error: err });
+    }
   });
-
   /**
    * @swagger
    * /api/article/:article-id:
@@ -98,8 +109,21 @@ module.exports = (connection) => {
    *       404:
    *         $ref: '#/components/responses/NotFound'
    */
-  router.get("/:article-id", (req, res) => {
-    res.json({ data: "ok" });
+  router.get("/:articleId", async (req, res) => {
+    try {
+      const { articleId } = req.params;
+      const result = await connection
+        .promise()
+        .query(
+          "SELECT * FROM articles LEFT JOIN comments ON articles.id= comments.article_id WHERE articles.id = ?",
+          [articleId]
+        );
+
+      res.json({ data: result[0] });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ error: err });
+    }
   });
   /**
    * @swagger
