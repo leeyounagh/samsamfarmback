@@ -96,7 +96,6 @@ class App {
     this.app.use(cors()); // cors 미들웨어 등록
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
-    this.app.use(cors());
   }
 
   registerRoutes() {
@@ -108,6 +107,10 @@ class App {
     this.app.use(
       "/api/article",
       require("./controllers/articleController/article")(this.connection)
+    );
+    this.app.use(
+      "/api/article/comment",
+      require("./controllers/articleController/comment")(this.connection)
     );
     this.app.use("/api/auth", require("./controllers/auth")(this.connection));
     this.app.use(

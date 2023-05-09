@@ -27,7 +27,14 @@ module.exports = (connection) => {
    */
   router.post("/", async (req, res, next) => {
     try {
-      res.json({ data: "ok" });
+      const { article_id, content, user_id } = req.body;
+      const result = await connection
+        .promise()
+        .query(
+          `INSERT INTO comments (article_id, content, user_id) VALUES ((SELECT id FROM articles WHERE id = ?), ?, ?)`,
+          [article_id, content, user_id]
+        );
+      res.json({ data: result });
     } catch (error) {
       next(error);
     }
