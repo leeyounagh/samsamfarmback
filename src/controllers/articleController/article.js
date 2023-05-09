@@ -65,7 +65,7 @@ module.exports = (connection) => {
    *       404:
    *         $ref: '#/components/responses/NotFound'
    */
-  router.get("/", async (req, res) => {
+  router.get("/", async (req, res, next) => {
     try {
       const { page, perPage } = req.query;
       const countResult = await connection
@@ -113,7 +113,7 @@ module.exports = (connection) => {
    *       404:
    *         $ref: '#/components/responses/NotFound'
    */
-  router.get("/:articleId", async (req, res) => {
+  router.get("/:articleId", async (req, res, next) => {
     try {
       const { articleId } = req.params;
       const result = await connection
@@ -194,6 +194,6 @@ module.exports = (connection) => {
   router.delete("/:article-id", (req, res) => {
     res.json({ date: "ok" });
   });
-  router.use("/comment", require("./comment")(this.connection));
+
   return router;
 };

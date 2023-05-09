@@ -108,6 +108,7 @@ class App {
       "/api/article",
       require("./controllers/articleController/article")(this.connection)
     );
+
     this.app.use(
       "/api/article/comment",
       require("./controllers/articleController/comment")(this.connection)

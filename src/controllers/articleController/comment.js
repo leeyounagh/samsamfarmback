@@ -1,7 +1,7 @@
 const express = require("express");
+const router = express.Router();
 
 module.exports = (connection) => {
-  const router = express.Router();
   // 댓글 생성
   /**
    * @swagger
