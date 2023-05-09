@@ -1,65 +1,68 @@
-require('dotenv').config();
+require("dotenv").config();
 
-<<<<<<< HEAD
 const mysql = require("mysql2");
 const express = require("express");
 const cron = require("cron");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
+const dbConnection = require("./models");
 const cors = require("cors");
-=======
-const mysql = require('mysql2');
-const express = require('express');
-const cron = require('cron');
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
-const dbConnection = require('./models');
-const cors = require('cors');
->>>>>>> 78e0faa36513290c149099e45c77006f26ef1d79
 
 const options = {
   definition: {
-    openapi: '3.0.0',
+    openapi: "3.0.0",
     info: {
-      title: 'Samsamfarm API with Swagger',
-      version: '1.0.0',
-      description: 'Samsamfarm API with Swagger'
+      title: "Samsamfarm API with Swagger",
+      version: "1.0.0",
+      description: "Samsamfarm API with Swagger",
     },
     servers: [
       {
-        url: 'http://localhost:5000',
-        description: 'Samsamfam server'
-      }
+        url: "http://localhost:5000",
+        description: "Samsamfam server",
+      },
     ],
     tags: [
       {
-        name: 'article',
-        description: 'About Article, Comment'
+        name: "article",
+        description: "About Article, Comment",
       },
       {
-        name: 'auth',
-        description: 'About User Register/Login'
+        name: "auth",
+        description: "About User Register/Login",
       },
       {
-        name: 'device',
-        description: 'About Actuator, Device'
+        name: "device",
+        description: "About Actuator, Device",
       },
       {
-        name: 'plant',
-        description: 'About Plant, Guest_book,Plant log'
+        name: "plant",
+        description: "About Plant, Guest_book,Plant log",
       },
       {
-        name: 'user',
-        description: 'About User Info'
-      }
-    ]
+        name: "user",
+        description: "About User Info",
+      },
+    ],
   },
-  apis: ['./src/controllers/*.js', './src/services/*.js', './src/errors/*.js', './src/controllers/articleController/*.js', './src/controllers/plantController/*.js']
+  apis: [
+    "./src/controllers/*.js",
+    "./src/services/*.js",
+    "./src/errors/*.js",
+    "./src/controllers/articleController/*.js",
+    "./src/controllers/plantController/*.js",
+  ],
 };
 
 const specs = swaggerJsdoc(options);
 
-const { BadRequest, Unauthorized, Forbidden, InternalServerError, NotFound } = require('./errors');
+const {
+  BadRequest,
+  Unauthorized,
+  Forbidden,
+  InternalServerError,
+  NotFound,
+} = require("./errors");
 
 class App {
   constructor() {
@@ -70,14 +73,14 @@ class App {
       port: process.env.MYSQL_PORT,
       database: process.env.MYSQL_DB,
       user: process.env.MYSQL_USER,
-      password: process.env.MYSQL_PW
+      password: process.env.MYSQL_PW,
     });
 
     this.connection.connect((err) => {
       if (err) {
-        console.error('Error connectiong to database', err);
+        console.error("Error connectiong to database", err);
       } else {
-        console.log('Connectd to Database!');
+        console.log("Connectd to Database!");
       }
     });
 
@@ -101,12 +104,21 @@ class App {
     // this.app.use("/api/users", usersRouter);
     // this.app.use("/posts", postsRouter);
 
-    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
-    this.app.use('/api/article', require('./controllers/articleController/article')(this.connection));
-    this.app.use('/api/auth', require('./controllers/auth')(this.connection));
-    this.app.use('/api/device', require('./controllers/device')(this.connection));
-    this.app.use('/api/plant', require('./controllers/plantController/plant')(this.connection));
-    this.app.use('/api/user', require('./controllers/user')());
+    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+    this.app.use(
+      "/api/article",
+      require("./controllers/articleController/article")(this.connection)
+    );
+    this.app.use("/api/auth", require("./controllers/auth")(this.connection));
+    this.app.use(
+      "/api/device",
+      require("./controllers/device")(this.connection)
+    );
+    this.app.use(
+      "/api/plant",
+      require("./controllers/plantController/plant")(this.connection)
+    );
+    this.app.use("/api/user", require("./controllers/user")());
   }
 
   registerErrorHandlers() {
@@ -129,7 +141,7 @@ class App {
         return;
       } else {
         console.error(err);
-        res.status(500).send({ message: 'INTERNAL_SERVER_ERROR' });
+        res.status(500).send({ message: "INTERNAL_SERVER_ERROR" });
         return;
       }
     });
@@ -144,7 +156,7 @@ class App {
 
   scheduleJobs() {
     // cron 스케줄 등록
-    const job = new cron.CronJob('*/1 * * * *', () => {
+    const job = new cron.CronJob("*/1 * * * *", () => {
       console.log(`The time is now ${new Date()}`);
     });
     job.start();

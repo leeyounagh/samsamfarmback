@@ -14,10 +14,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-<<<<<<< HEAD
-=======
+
     "bcrypt": "^5.1.0",
->>>>>>> 78e0faa36513290c149099e45c77006f26ef1d79
     "cors": "^2.8.5",
     "cron": "^2.3.0",
     "dotenv": "^16.0.3",
