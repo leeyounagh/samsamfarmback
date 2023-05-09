@@ -68,13 +68,17 @@ module.exports = (connection) => {
   router.get("/", async (req, res) => {
     try {
       const { page, perPage } = req.query;
+      const countResult = await connection
+        .promise()
+        .query("SELECT COUNT(*) AS count FROM articles");
+      const totalCount = countResult[0][0].count; // 결과값이 [ [ { count: 123 } ] ] 와 같은 형태로 반환되므로, [0][0].count로 결과값에 접근합니다.
       const result = await connection
         .promise()
         .query("SELECT * FROM articles LIMIT ?, ?", [
           (page - 1) * perPage,
           parseInt(perPage),
         ]);
-      res.json({ data: result[0] }); // result는 배열 형태로 반환되므로, [0]으로 실제 결과값에 접근합니다.
+      res.json({ data: result[0], totalCount }); // totalCount를 추가하여 응답합니다.
     } catch (err) {
       console.log(err);
       res.status(500).json({ error: err });
