@@ -1,79 +1,47 @@
-const express = require("express");
+// 회원가입 및 로그인 (/auth)
+// TODO: sign-in / sign-out
+// MBTI 추가 / 수정
+
+const express = require('express');
+const UserService = require('../services/userService');
+const { CreateUserRequestDTO, UserDTO, LoginUserRequestDTO, LoginUserResponseDTO } = require('../dtos/userDto');
 
 module.exports = (connection) => {
   const router = express.Router();
+  const userService = new UserService();
 
   /**
    * @swagger
-   
    * /api/auth/sign-up:
    *   post:
    *     summary: 유저 회원가입
    *     tags: [auth]
    *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             $ref: '#/components/schemas/users'
-   *     parameters:
-   *       - name: email
-   *         in: query
-   *         required: true
-   *         description: 유저 DB에 저장할 이메일
-   *         schema:
-   *           type: string  
-   *       - name: name
-   *         in: query
-   *         required: true
-   *         description: 유저 DB에 저장할 이름
-   *         schema:
-   *           type: string
-   *       - name: nickname
-   *         in: query
-   *         required: true
-   *         description: 유저 DB에 저장할 닉네임
-   *         schema:
-   *           type: string
-   *       - name: pasword
-   *         in: query
-   *         required: true
-   *         description: 유저 DB에 저장할 비밀번호
-   *         schema:
-   *           type: string
-   *       - name: mbti
-   *         in: query
-   *         required: true
-   *         description: 유저 DB에 저장할 mbti
-   *         schema:
-   *           type: string
-   *           enum: ['ISTJ','ISFJ','INFJ','INTJ','ISTP','ISFP','INFP','INTP','ESTP','ESFP','ENFP','ENTP','ESTJ','ESFJ','ENFJ','ENTJ']
-   *       - name: phone
-   *         in: query
-   *         required: true
-   *         description: 유저 DB에 저장할 전화번호
-   *         schema:
-   *           type: string      
+   *       $ref: '#/components/dtos/CreateUserRequestDTO/requestBody'
    *     responses:
    *       200:
    *         description: 회원가입 완료.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: '#/components/schemas/users'
-   *       404:
-   *         $ref: '#/components/responses/NotFound'
+   *               $ref: '#/components/dtos/UserDTO'
+   *       400:
+   *         description: Invalid Sign-up.
+   *       500:
+   *         description: Server Error.
+   *
    */
-
-  router.post("/sign-up", async (req, res, next) => {
+  router.post('/sign-up', async (req, res, next) => {
     try {
-      res.json({ data: "ok" });
+      const user = new CreateUserRequestDTO(req.body);
+      const result = new UserDTO(await userService.createUser(user));
+
+      res.json(result);
     } catch (error) {
       next(error);
     }
   });
 
-  // 로그인
   /**
    * @swagger
    
@@ -82,40 +50,31 @@ module.exports = (connection) => {
    *     summary: 유저 로그인
    *     tags: [auth]
    *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             $ref: '#/components/schemas/users'
-   *     parameters:
-   *       - name: email
-   *         in: query
-   *         required: true
-   *         description: 유저 DB에 저장할 이메일
-   *         schema:
-   *           type: string  
-   *       - name: pasword
-   *         in: query
-   *         required: true
-   *         description: 유저 DB에 저장할 비밀번호
-   *         schema:
-   *           type: string
+   *       $ref: '#/components/dtos/LoginUserRequestDTO/requestBody'
    *     responses:
    *       200:
-   *         description: 회원가입 완료.
+   *         description: 로그인 성공.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: '#/components/schemas/users'
-   *       404:
-   *         $ref: '#/components/responses/NotFound'
+   *               $ref: '#/components/dtos/LoginUserResponseDTO'
+   *       400:
+   *         description: Invalid Sign-in.
+   *       500:
+   *         description: Server Error.
+   *
    */
-  router.post("/sign-in", async (req, res, next) => {
+  router.post('/sign-in', async (req, res, next) => {
     try {
-      res.json({ data: "ok" });
+      const user = new LoginUserRequestDTO(req.body);
+
+      const result = new LoginUserResponseDTO(await userService.loginUser(user));
+
+      res.json(result);
     } catch (error) {
-      next(err);
+      next(error);
     }
   });
+
   return router;
 };
