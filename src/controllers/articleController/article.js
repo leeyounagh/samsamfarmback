@@ -28,6 +28,7 @@ module.exports = (connection) => {
   router.post("/", async (req, res, next) => {
     try {
       const { title, content, user_id } = req.body;
+
       await connection
         .promise()
         .query(
