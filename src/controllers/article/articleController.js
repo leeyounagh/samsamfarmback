@@ -215,7 +215,7 @@ const commentService = new CommentService();
  * @swagger
  * /api/v1/article/{article-id}:
  *   patch:
- *     summary: 게시물 수정 안씀
+ *     summary: 게시물 수정 
  *     tags: [article]
  *     security:
  *       - BearerAuth: []
@@ -242,20 +242,18 @@ const commentService = new CommentService();
  *               type: object
  *               properties:
  *                 data:
- *                   example: ok
+ *                   example: modify Success
  *       400:
  *         description: BAD_REQUEST.
  */
-  router.patch("/:article-id", (req, res, next) => {
+  router.patch("/:article_id", async(req, res, next) => {
     try {
-      const { articleId } = req.params; 
-      const { title, content } = req.body; 
+      const articleId = req.params.article_id; 
+      const { title, content } = req.body;
+    
+      await articleService.modifyArticle(articleId, title, content);
 
-      const modifyArticleDTO = new ModifyArticleDTO({ title, content });
-
-      const modifyArticle = articleService.modifyArticle(articleId, modifyArticleDTO);
-
-      res.json({ data: modifyArticle });
+      res.json({ data: "modify Success" });
     } catch (err) {
       next(err);
     }
@@ -265,7 +263,7 @@ const commentService = new CommentService();
  * @swagger
  * /api/v1/article/{article-id}:
  *   delete:
- *     summary: 게시물 삭제 안씀
+ *     summary: 게시물 삭제 
  *     tags: [article]
  *     security:
  *       - BearerAuth: []
@@ -284,9 +282,9 @@ const commentService = new CommentService();
  *       400:
  *         description: BAD_REQUEST.
  */
-  router.delete("/:article-id", (req, res, next) => {
+  router.delete("/:article_id", (req, res, next) => {
     try {
-      const { articleId } = req.params;
+      const articleId = req.params.article_id;
       articleService.deleteArticle(articleId);
       res.status(204).end();
     } catch(err) {
@@ -345,9 +343,54 @@ const commentService = new CommentService();
 
 /**
  * @swagger
- * /api/v1/comment/:comment-id:
+ * /api/v1/article/comment/{comment_id}:
+ *   patch:
+ *     summary: 댓글 수정 
+ *     tags: [article]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               content:
+ *                 type: string
+ *           example:
+ *             content: "수정된 내용"
+ *     responses:
+ *       200:
+ *         description: 댓글 수정 성공.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   example: modify Success
+ *       400:
+ *         description: BAD_REQUEST.
+ */
+ router.patch("/comment/:comment_id", async (req, res, next) => {
+   try {
+     const commentId = req.params.comment_id;
+     const { content } = req.body;
+
+     await commentService.modifyComment(commentId, content);
+
+     res.json({ data: "modify Success" });
+   } catch (error) {
+     next(error);
+   }
+ });
+
+/**
+ * @swagger
+ * /api/v1/article/comment/{comment-id}:
  *   delete:
- *     summary: 댓글 삭제 안씀
+ *     summary: 댓글 삭제 
  *     tags: [article]
  *     security:
  *       - BearerAuth: []
@@ -366,10 +409,11 @@ const commentService = new CommentService();
  *       400:
  *         description: BAD_REQUEST.
  */
-  router.delete("/comment/:comment-id", (req, res, next) => {
+  router.delete("/comment/:comment_id", (req, res, next) => {
     try {
-      const { commentId } = req.params;
+      const commentId = req.params.comment_id;
       commentService.deleteComment(commentId);
+      
       res.status(204).end();
     } catch(err) {
       next(err);

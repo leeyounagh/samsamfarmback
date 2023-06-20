@@ -11,6 +11,9 @@ class CommentService {
   deleteComment(commentId) {
     return this.commentRepository.deleteComment(commentId);
   }
+  modifyComment(commentId, content) {
+    return this.commentRepository.modifyComment(commentId, content);
+  }
 }
 
 module.exports = CommentService;

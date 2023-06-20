@@ -26,13 +26,13 @@ class ArticleRepository extends Repository {
         "articles.view_count",
         "comments.content as comment",
         "comments.created_at as comment_created_at",
+        "comments.id as comment_id",
         "users.nickname as nickname",
         "users.id as user_id"
       )
       .where("articles.id", article_id);
-      console.log(result)
+    console.log(result);
     return result;
-    
   }
 
   getAllArticle(page, perPage) {
@@ -56,18 +56,16 @@ class ArticleRepository extends Repository {
       .offset(offset);
   }
 
-  async modifyArticle(article_id, modifyArticleDTO) {
+  async modifyArticle(article_id, title, content) {
     try {
-      const article = await findById(article_id);
-      if (!article) {
-        throw new BadRequest("Article not found");
-      }
+      //const article = await findById(article_id);
+     // if (!article) {
+      //  throw new BadRequest("Article not found");
+     // }
       await this.db(this.table).where("id", article_id).update({
-        title: modifyArticleDTO.title,
-        content: modifyArticleDTO.content,
+        title,
+        content
       });
-
-      return { id: article_id, ...modifyArticleDTO };
     } catch (err) {
       next(err);
     }
@@ -85,11 +83,10 @@ class ArticleRepository extends Repository {
 
   async deleteArticle(article_id) {
     try {
-      const result = await this.db(this.table).where("id", article_id).update({
+      await this.db(this.table).where("id", article_id).update({
         deleted_at: new Date(),
       });
 
-      return result;
     } catch (err) {
       next(err);
     }

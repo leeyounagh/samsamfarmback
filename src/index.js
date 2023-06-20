@@ -25,7 +25,7 @@ class App {
   constructor() {
     this.app = express();
     this.mqttHandler = new MqttHandler();
-    this.port = process.env?.API_PORT || 5000;
+    this.port = process.env?.API_PORT;
     this.registerMiddleware();
     this.registerRoutes();
     this.registerErrorHandlers();

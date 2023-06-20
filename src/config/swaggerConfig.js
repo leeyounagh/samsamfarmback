@@ -10,7 +10,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:5000",
+        url: "http://43.202.43.17:8080/",
         description: "Samsamfam server",
       },
     ],

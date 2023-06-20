@@ -9,15 +9,20 @@ class CommentRepository extends Repository {
     await this.db(this.table).insert({
       user_id: info.user_id,
       article_id: info.article_id,
-      content: info.content
+      content: info.content,
     });
   }
-  async deleteComment(comment_id) {
-    const result = await this.db(this.table).where("id", comment_id).update({
+  async deleteComment(commentId) {
+    await this.db(this.table).where("id", commentId).update({
       deleted_at: new Date(),
     });
-
-    return result;
+  }
+  async modifyComment(commentId, content) {
+     try {
+       await this.db(this.table).where("id", commentId).update({content});
+     } catch (err) {
+       next(err);
+     }
   }
 }
 module.exports = CommentRepository;

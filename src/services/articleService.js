@@ -17,8 +17,8 @@ class ArticleService {
     return this.articleRepository.getArticleWithComment(articleId);
   }
 
-  modifyArticle(articleId, modifyArticleDTO) {
-    return this.articleRepository.modifyArticle(articleId, modifyArticleDTO);
+  modifyArticle(articleId, title, content) {
+    return this.articleRepository.modifyArticle(articleId, title, content);
   }
 
   countView(articleId) {
@@ -26,7 +26,7 @@ class ArticleService {
   }
 
   deleteArticle(articleId) {
-    return this.articleRepository.deleteArticle();
+    return this.articleRepository.deleteArticle(articleId);
   }
 }
 

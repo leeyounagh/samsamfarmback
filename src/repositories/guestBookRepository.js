@@ -20,6 +20,14 @@ class GuestBookRepository extends Repository {
       .from("guest_books")
       .where({ user_id: userId });
   }
+  modifyGuestBook(guestBookId, content) {
+    return this.db(this.table).where("id", guestBookId).update({ content });
+  }
+  async deleteGuestBookById(guestBookId) {
+   await this.db(this.table).where("id", guestBookId).update({
+     deleted_at: new Date(),
+   }); 
+  }
 }
 
 module.exports = GuestBookRepository;

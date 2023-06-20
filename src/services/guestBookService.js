@@ -14,6 +14,13 @@ class GuestBookService {
   getGuestBook(userId) {
     return this.guestBookRepository.getGuestBook(userId);
   }
+
+  modifyGuestBook(guestBookId, content) {
+    return this.guestBookRepository.modifyGuestBook(guestBookId, content);
+  }
+  deleteGuestBookById(guestBookId) {
+    return this.guestBookRepository.deleteGuestBookById(guestBookId);
+  }
 }
 
 module.exports = GuestBookService;

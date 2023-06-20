@@ -6,7 +6,7 @@ const router = express.Router();
 const guestBookService = new GuestBookService();
   /**
    * @swagger
-   * /api/v1/plant/guest-book:
+   * /api/v1/plant/guestBook:
    *   post:
    *     summary: 새로운 방명록 작성
    *     tags: [plant]
@@ -54,7 +54,7 @@ const guestBookService = new GuestBookService();
 
   /**
    * @swagger
-   * /api/v1/plant/guest-book:
+   * /api/v1/plant/guestBook:
    *   get:
    *     summary: 방명록 불러오기(미구현)
    *     tags: [plant]
@@ -87,42 +87,42 @@ const guestBookService = new GuestBookService();
 
   /**
    * @swagger
-   * /api/v1/plant/guest-book:
+   * /api/v1/plant/guestBook/{guestBook_id}:
    *   patch:
-   *     summary: 방명록 수정(미구현)
+   *     summary: 방명록 수정
    *     tags: [plant]
    *     requestBody:
    *       required: true
    *       content:
    *         application/json:
    *           schema:
-   *             $ref: '#/components/schemas/guest_books'
-   *     parameters:
-   *       - name: writer
-   *         in: query
-   *         required: true
-   *         description: 방명록 작성자
-   *         schema:
-   *           type: string
-   *       - name: content
-   *         in: query
-   *         required: true
-   *         description: 방명록 내용
-   *         schema:
-   *           type: string
+   *             type: object
+   *             properties:
+   *               content:
+   *                 type: string
+   *           example:
+   *             content: "수정된 내용"
    *     responses:
    *       200:
-   *         description: 방명록 수정 성공.
+   *         description: 댓글 수정 성공.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: '#/components/schemas/guest_books'
-   *       404:
-   *         $ref: '#/components/responses/NotFound'
+   *               type: object
+   *               properties:
+   *                 data:
+   *                   example: modify Success
+   *       400:
+   *         description: BAD_REQUEST.
    */
-  router.patch("/", async (req, res, next) => {
+  router.patch("/:guestBook_id", async (req, res, next) => {
     try {
-      res.json({ data: "ok" });
+      const guestBookId = req.params.guestBook_id;
+      const {content} = req.body;
+
+      await guestBookService.modifyGuestBook(guestBookId, content);
+
+      res.json({ data: "modify Success" })
     } catch (error) {
       next(error);
     }
@@ -130,9 +130,9 @@ const guestBookService = new GuestBookService();
 
   /**
    * @swagger
-   * /api/v1/plant/guest-book:
+   * /api/v1/plant/guestBook/{guestBook_id}:
    *   delete:
-   *     summary: 방명록 불러오기(미구현)
+   *     summary: 방명록 삭제
    *     tags: [plant]
    *     requestBody:
    *       required: true
@@ -141,18 +141,19 @@ const guestBookService = new GuestBookService();
    *           schema:
    *             $ref: '#/components/schemas/guest_books'
    *     responses:
-   *       200:
-   *         description: 방명록 삭제 성공.
+   *       204:
+   *         description: 성공.
    *         content:
    *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/guest_books'
-   *       404:
-   *         $ref: '#/components/responses/NotFound'
+   *       400:
+   *         description: BAD_REQUEST.
    */
-  router.delete("/", async (req, res, next) => {
+  router.delete("/:guestBook_id", async (req, res, next) => {
     try {
-      res.json({ data: "ok" });
+      const guestBookId = req.params.guestBook_id;
+      await guestBookService.deleteGuestBookById(guestBookId);
+
+      res.status(204).end();
     } catch (error) {
       next(error);
     }
